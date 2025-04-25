@@ -1,4 +1,4 @@
-#include "Order.h"
+#include "order.h"
 
 Order::Order(int id, OrderSide side, double price, int quantity)
    : id(id), side(side), price(price), quantity(quantity) {
@@ -6,10 +6,13 @@ Order::Order(int id, OrderSide side, double price, int quantity)
        std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-int Order::getID() const {return id;}
-OrderSide Order::getSide() const { return side; }   
-double Order::getPrice() const { return price; }
-int Order::getQuantity() const { return quantity; }
-long long Order::getTimestamp() const { return timestamp; }
 
-
+bool Order::operator<(const Order& other) const {
+  if (price == other.price) {
+    return timestamp > other.timestamp;
+  }
+  if (side == OrderSide::BUY) {
+    return price < other.price;
+  }
+  return price > other.price;
+}

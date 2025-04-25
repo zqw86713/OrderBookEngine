@@ -12,16 +12,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Order.h">
+    <ClInclude Include="order.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="order_book.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Order.cpp">
+    <ClCompile Include="order.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="order_book.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="test_order_book.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="test_smoke.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>
