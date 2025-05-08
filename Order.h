@@ -19,6 +19,7 @@ public:
         double getPrice() const { return price; }
         int getQuantity() const { return quantity; }
         long long getTimestamp() const { return timestamp; }
+        void reduceQuantity(int amount);
 
 		bool operator<(const Order& other) const;
 

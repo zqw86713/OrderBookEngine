@@ -2,34 +2,34 @@
 #include "order.h"
 #include "order_book.h"
 
+
+#include "OrderBookEngine.h"
+#include <iostream>
+
 int main() {
-	//Day 1 test.
-	//Order order1(1, OrderSide::BUY, 100.5, 10);
-	//std::cout << "Order ID: " << order1.getID() << std::endl;
-	//std::cout << "Price: " << order1.getPrice() << std::endl;
-	//std::cout << "Quantity: " << order1.getQuantity() << std::endl;
-	//std::cout << "Timestamp: " << order1.getTimestamp() << std::endl;
+  OrderBookEngine engine;
 
-	//Day 2 test.
-	//OrderBook ob;
+  std::cout << "--- Submitting Buy Order (ID 1) ---\n";
+  Order buyOrder(1, OrderSide::BUY, 100.0, 10);
+  engine.submitOrder(buyOrder);
 
-	////seed some order
-	 //       ob.addOrder(Order(1, OrderSide ::BUY, 101.0, 10));
-	 //       ob.addOrder(Order(2, OrderSide ::SELL, 100.0, 5));
-	 //       ob.addOrder(Order(3, OrderSide::SELL, 99.5, 7));
+  std::cout << "--- Submitting Sell Order (ID 2) ---\n";
+  Order sellOrder(2, OrderSide::SELL, 99.0, 5);
+  engine.submitOrder(sellOrder);  // Should match immediately
 
-	//std::cout << "Matching orders...\n";
- //       ob.matchOrders();
- //       std::cout << "Done.\n";
-        OrderBook ob;
-        ob.addOrder(Order(1, OrderSide::BUY, 101.0, 100));
-        ob.addOrder(Order(2, OrderSide::SELL, 102.0, 50));
-        ob.cancelOrder(1);
-        ob.matchOrders();
-        std::cout << "Testing cancelOrder():\n";
-        std::cout << "Expect no matching since BUY order 1 was cancelled.\n";
+  std::cout << "--- Submitting Another Buy Order (ID 3) ---\n";
+  Order buyOrder2(3, OrderSide::BUY, 101.0, 20);
+  engine.submitOrder(buyOrder2);
 
+  std::cout << "--- Canceling Buy Order (ID 3) ---\n";
+  if (!engine.cancelOrder(3)) {
+    std::cout << "Failed to cancel order ID 3\n";
+  }
 
-	return 0;
+  std::cout << "--- Canceling Nonexistent Order (ID 999) ---\n";
+  if (!engine.cancelOrder(999)) {
+    std::cout << "Correctly failed to cancel non-existent order\n";
+  }
 
+  return 0;
 }

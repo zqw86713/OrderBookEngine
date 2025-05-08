@@ -16,3 +16,8 @@ bool Order::operator<(const Order& other) const {
   }
   return price > other.price;
 }
+
+void Order::reduceQuantity(int amount) {
+  if (amount <= 0) return;
+  quantity = std::max(0, quantity - amount);
+}
