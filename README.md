@@ -35,11 +35,11 @@ A high-performance, modular order book engine written in C++17. This project sim
 ---
 
 ## 🧠 Sample Output
-
+```
 Trade: B1 buys from S1 at $99.5 for 8 units
 Trade: B1 buys from S2 at $100 for 2 units
 Trade: B2 buys from S2 at $100 for 5 units
-
+```
 
 
 ---
