@@ -9,27 +9,30 @@ enum class OrderSide {
 };
 
 
-class Order {
-public:
-    Order(int id, OrderSide side, double price, int quantity);
+
+struct Order {
+	std::string id; // Unique identifier for the order
+	OrderSide side; // BUY or SELL side of the order
+	double price; // Price at which the order is placed
+	int quantity; // Quantity of the asset to be bought or sold
+	std::chrono::steady_clock::time_point timestamp; // Timestamp of when the order was created
+
+	Order(std::string id_, OrderSide side_, double price_, int quantity_, std::chrono::steady_clock::time_point ts = std::chrono::steady_clock::now())
+		: id(std::move(id_)), side(side_), price(price_), quantity(quantity_), timestamp(ts) {
+	}
+
+};
 
 
-		int getID() const { return id; }
-        OrderSide getSide() const { return side; }
-        double getPrice() const { return price; }
-        int getQuantity() const { return quantity; }
-        long long getTimestamp() const { return timestamp; }
-        void reduceQuantity(int amount);
+struct BidComparator {
+	bool operator()(const Order& a, const Order& b) const {
+		return (a.price > b.price) || (a.price == b.price && a.timestamp < b.timestamp);
+	}
+};
 
-		bool operator<(const Order& other) const;
-
-private:
-	int id;
-	OrderSide side;
-	double price;
-	int quantity;
-	long long timestamp; // Timestamp in milliseconds since epoch
-
-
+struct AskComparator {
+	bool operator()(const Order& a, const Order& b) const {
+		return (a.price < b.price) || (a.price == b.price && a.timestamp < b.timestamp);
+	}
 };
 

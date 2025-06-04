@@ -25,15 +25,15 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\order.h" />
+    <ClInclude Include="Headers\Order.h" />
     <ClInclude Include="Headers\OrderBookEngine.h" />
-    <ClInclude Include="Headers\order_book.h" />
+    <ClInclude Include="Headers\OrderBook.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\main.cpp" />
     <ClCompile Include="Sources\order.cpp" />
     <ClCompile Include="Sources\OrderBookEngine.cpp" />
-    <ClCompile Include="Sources\order_book.cpp" />
+    <ClCompile Include="Sources\OrderBook.cpp" />
     <ClCompile Include="Tests\test_order_book.cpp" />
     <ClCompile Include="Tests\test_smoke.cpp" />
   </ItemGroup>
