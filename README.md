@@ -24,12 +24,13 @@ A high-performance, modular order book engine written in C++17. This project sim
 
 ## 📂 Project Structure
 
+```
 ├── OrderBook.h # Order management: add/cancel/modify/query
 ├── MatchingEngine.h/.cpp # Order matching logic
 ├── main.cpp # Sample usage of OrderBook and MatchingEngine
 ├── CMakeLists.txt # (Upcoming) Build configuration with gtest support
 └── README.md # Project overview
-
+```
 
 ---
 
