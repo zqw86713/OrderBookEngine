@@ -19,29 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="order.h" />
-    <ClInclude Include="OrderBookEngine.h" />
-    <ClInclude Include="order_book.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="order.cpp" />
-    <ClCompile Include="OrderBookEngine.cpp" />
-    <ClCompile Include="order_book.cpp" />
-    <ClCompile Include="test_order_book.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="test_smoke.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="Sources\main.cpp" />
+    <ClCompile Include="Sources\order.cpp" />
+    <ClCompile Include="Sources\OrderBookEngine.cpp" />
+    <ClCompile Include="Sources\order_book.cpp" />
+    <ClCompile Include="tests\test_order_book.cpp" />
+    <ClCompile Include="tests\test_smoke.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\order.h" />
+    <ClInclude Include="Headers\OrderBookEngine.h" />
+    <ClInclude Include="Headers\order_book.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
