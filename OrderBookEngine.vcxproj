@@ -25,10 +25,12 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\MatchingEngine.h" />
     <ClInclude Include="Headers\OrderBook.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\main.cpp" />
+    <ClCompile Include="Sources\MatchingEngine.cpp" />
     <ClCompile Include="Sources\OrderBook.cpp" />
     <ClCompile Include="Tests\test_order_book.cpp" />
     <ClCompile Include="Tests\test_smoke.cpp" />
