@@ -1,108 +1,73 @@
-﻿
----
+﻿# OrderBookEngine
 
-## ✅ `README.md` for `OrderBookEngine`
-
-```markdown
-# 🏛️ OrderBookEngine — C++17 Multithreaded Trading Engine
-
-**OrderBookEngine** is a high-performance simulation of a Level-2 limit order book written in modern C++17.  
-The project is designed to mimic the behavior of production-grade trading systems, featuring real-world mechanisms like price-time priority, partial fills, and thread-safe order management.
+A high-performance, modular order book engine written in C++17. This project simulates exchange-style order matching and demonstrates practical system architecture, data structure mastery, and modern C++ practices—ideal for backend and quantitative developer interviews.
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-- 📈 **Limit Order Matching** — Simulates Level-2 price-time priority queueing
-- ⛓ **Multithreaded Execution** — Uses `std::mutex` and `std::lock_guard` for thread safety
-- ✅ **Partial Fill Support** — Handles split execution based on quantity availability
-- 🧪 **Unit Test Support** — Integrates with GoogleTest for future validation
-- 📦 **Modern Build System** — Configured using CMake + Conan for dependency management
-- 🐳 **Container-Ready** — Dockerfile included for portable builds and testing
+- 🧾 **Order Book**
+  - Supports `BUY` and `SELL` limit orders
+  - Maintains price-time priority via custom comparators (`std::set`)
+  - Fast order ID lookups using `std::unordered_map`
 
----
+- ⚙️ **Matching Engine**
+  - Decoupled matching logic via a dedicated `MatchingEngine` class
+  - Executes partial or full fills based on bid/ask priority
+  - Returns structured `Trade` objects with buyer/seller IDs, price, quantity, and timestamp
 
-## 🧱 Core Components
-
-| File               | Description                                 |
-|--------------------|---------------------------------------------|
-| `order.h/.cpp`     | Order class: includes price, quantity, side, timestamp |
-| `order_book.h/.cpp`| OrderBook class: manages buy/sell queues and matching |
-| `main.cpp`         | Sample executable to simulate order flow and matching |
-| `CMakeLists.txt`   | Build configuration (C++17, warnings, test integration) |
-| `tests/`           | (Optional) GoogleTest test cases for order logic |
+- 🧪 **Test-Ready Architecture**
+  - Structured to support Google Test and CMake integration
+  - Includes a runnable `main.cpp` demonstrating the matching engine in action
 
 ---
 
-## 🧪 Example Output
+## 📂 Project Structure
 
-```
-Matching orders...
-Matched: 10 units @ 99.50
-Matched: 5 units @ 99.00
-Done.
-```
+├── OrderBook.h # Order management: add/cancel/modify/query
+├── MatchingEngine.h/.cpp # Order matching logic
+├── main.cpp # Sample usage of OrderBook and MatchingEngine
+├── CMakeLists.txt # (Upcoming) Build configuration with gtest support
+└── README.md # Project overview
 
----
-
-## 🔧 Build Instructions
-
-### ▶️ Prerequisites
-
-- CMake ≥ 3.14
-- C++17-compatible compiler (GCC, Clang, MSVC)
-- Conan (for dependency management)
-- [Optional] GoogleTest
-
-### ⚙️ Build Steps
-
-```bash
-mkdir build && cd build
-conan install .. --build=missing
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build .
-```
 
 ---
 
-## 📦 Run
+## 🧠 Sample Output
 
-```bash
-./OrderBookEngine
-```
+Trade: B1 buys from S1 at $99.5 for 8 units
+Trade: B1 buys from S2 at $100 for 2 units
+Trade: B2 buys from S2 at $100 for 5 units
 
----
 
-## 🧪 Unit Tests (optional)
-
-```bash
-./test_order_book
-```
-
-*Make sure you’ve linked GoogleTest if tests are enabled.*
 
 ---
 
-## 💡 Motivation
+## 🔭 Planned Features
 
-This project was developed as a self-initiated backend + quant systems simulation, to explore:
-
-- Order matching logic used in high-frequency trading
-- C++ concurrency patterns in real-time execution engines
-- Scalable backend infrastructure for financial systems
-
----
-
-## 🛡 License
-
-This project is licensed under the MIT License. See [`LICENSE`](LICENSE) for more information.
+| Feature | Description |
+|--------|-------------|
+| 🧪 Google Test | Add unit test coverage for core modules |
+| 💡 Market Orders | Support for non-price-constrained orders |
+| ⏱️ Latency Metrics | Measure and log matching latency with `std::chrono` |
+| 🧵 Multithreading | Simulate concurrent order flow for HFT-style stress testing |
+| 📊 Trade Log | Export trade execution to CSV/JSON for backtesting or analysis |
+| 🌐 API / CLI | Add REST interface or command-line control for end-to-end simulation |
 
 ---
 
-## 🙋‍♂️ Author
+## 🎯 Project Goals
+
+This engine was built as a foundational simulation for:
+- Interview preparation (Google, Citadel, HRT, Jane Street, etc.)
+- Showcasing backend development skills in C++
+- Practicing real-time matching logic used in trading infrastructure
+- Long-term expansion toward quantitative strategy simulation and HFT modeling
+
+---
+
+## 👤 Author
 
 **Qingwei Zhang**  
-Backend Engineer | Quant Developer Aspirant  
-[GitHub: zqw86713](https://github.com/zqw86713)
-
-```
+Backend Developer | Aspiring Quantitative Developer  
+[GitHub Profile](https://github.com/zqw86713)
