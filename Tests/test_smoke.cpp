@@ -7,3 +7,10 @@
 //	return RUN_ALL_TESTS();
 //
 //}
+
+#include <gtest/gtest.h>
+
+TEST(SampleTest, Add2) {
+    EXPECT_EQ(2 + 1, 3);
+}
+
