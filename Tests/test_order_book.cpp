@@ -46,3 +46,10 @@
 //  ::testing::InitGoogleTest(&argc, argv);
 //  return RUN_ALL_TESTS();
 //}
+
+#include <gtest/gtest.h>
+
+TEST(SampleTest, Add1) {
+    EXPECT_EQ(1 + 1, 2);
+}
+
