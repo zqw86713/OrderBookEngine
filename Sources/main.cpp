@@ -1,27 +1,30 @@
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <string>
 #include "../Headers/OrderBook.h"
 #include "../Headers/MatchingEngine.h"
-#include <iostream>
 
 int main() {
     OrderBook order_book;
-
-
-    order_book.addOrder(Order("B1", OrderSide::BUY, 101.0, 10));
-    order_book.addOrder(Order("B2", OrderSide::BUY, 100.5, 5));
-    order_book.addOrder(Order("S1", OrderSide::SELL, 99.5, 8));
-    order_book.addOrder(Order("S2", OrderSide::SELL, 100.0, 7));
-
-
     MatchingEngine engine(order_book);
+
+    // ???? 6 ??????????????
+    order_book.addOrder(Order("buy1", OrderSide::BUY, 105.0, 10));
+    order_book.addOrder(Order("sell1", OrderSide::SELL, 95.0, 10));
+    order_book.addOrder(Order("buy2", OrderSide::BUY, 105.0, 10));
+    order_book.addOrder(Order("sell2", OrderSide::SELL, 95.0, 10));
+    order_book.addOrder(Order("buy3", OrderSide::BUY, 105.0, 10));
+    order_book.addOrder(Order("sell3", OrderSide::SELL, 95.0, 10));
+
+    std::cout << "[INFO] Starting match...\n";
+
     auto trades = engine.match();
-       
 
-
-    for (const auto& trade : trades) {
-        std::cout << "Trade: "
-            << trade.buyer_id << " buys from " << trade.seller_id
-            << " at $" << trade.price << " for " << trade.quantity
-            << " units\n";
+    std::cout << "[RESULT] Trades executed: " << trades.size() << "\n";
+    for (const auto& t : trades) {
+        std::cout << "  - " << t.buyer_id << " buys from " << t.seller_id
+            << " at " << t.price << " qty " << t.quantity << "\n";
     }
 
     return 0;

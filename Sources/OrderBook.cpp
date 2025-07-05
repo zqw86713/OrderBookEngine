@@ -1,4 +1,4 @@
-#include "../Headers/OrderBook.h"
+﻿#include "../Headers/OrderBook.h"
 #include<algorithm>
 #include <iostream>
 
@@ -70,32 +70,42 @@ std::optional<Order> OrderBook::getTopAsk() const {
 
 
 void OrderBook::matchOrders() {
-        while (!buy_orders_.empty() && !sell_orders_.empty()) {
-			auto best_bid = *buy_orders_.begin();
-			auto best_ask = *sell_orders_.begin();
+    while (!buy_orders_.empty() && !sell_orders_.empty()) {
+        auto best_bid_it = buy_orders_.begin();
+        auto best_ask_it = sell_orders_.begin();
 
-            if (best_bid.price >= best_ask.price) {
-                int trade_qty = std::min(best_bid.quantity, best_ask.quantity);
-				// here you can log the trade or notify subscribers
-                std::cout << "Trade executed: " << trade_qty << " units at price "
-					<< best_ask.price << "\n";
+        const Order& best_bid = *best_bid_it;
+        const Order& best_ask = *best_ask_it;
 
-				//Modify quantities or remove orders
-				cancelOrder(best_bid.id);
-                cancelOrder(best_ask.id);
+        // 成交条件
+        if (best_bid.price >= best_ask.price) {
+            int trade_qty = std::min(best_bid.quantity, best_ask.quantity);
 
-                if (best_bid.quantity > trade_qty) {
-					addOrder(Order(best_bid.id, best_bid.side, best_bid.price, best_bid.quantity - trade_qty, best_bid.timestamp));
-                }
+            // ✅ 缓存剩余部分（在 cancelOrder 之前）
+            int remaining_bid_qty = best_bid.quantity - trade_qty;
+            int remaining_ask_qty = best_ask.quantity - trade_qty;
 
-                if (best_ask.quantity > trade_qty) {
-					addOrder(Order(best_ask.id, best_ask.side, best_ask.price, best_ask.quantity - trade_qty, best_ask.timestamp));
+            std::string bid_id = best_bid.id;
+            std::string ask_id = best_ask.id;
 
-                }
+            // 输出成交信息
+            //std::cout << "Trade executed: " << trade_qty << " units at price " << best_ask.price << "\n";
 
-            } else {
-				break; // No more matches possible
+            // ⚠️ 删除旧订单（会使 iterator 失效）
+            cancelOrder(bid_id);
+            cancelOrder(ask_id);
+
+            // ⚠️ 重建剩余挂单
+            if (remaining_bid_qty > 0) {
+                addOrder(Order(bid_id, OrderSide::BUY, best_bid.price, remaining_bid_qty, best_bid.timestamp));
             }
-		}
 
+            if (remaining_ask_qty > 0) {
+                addOrder(Order(ask_id, OrderSide::SELL, best_ask.price, remaining_ask_qty, best_ask.timestamp));
+            }
+        }
+        else {
+            break; // ❌ 不再满足撮合条件
+        }
     }
+}

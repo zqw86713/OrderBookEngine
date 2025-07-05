@@ -4,12 +4,6 @@
     <ClCompile Include="D:\MyProjects\OrderBookEngine\Sources\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D:\MyProjects\OrderBookEngine\Sources\MatchingEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="D:\MyProjects\OrderBookEngine\Sources\OrderBook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="D:\MyProjects\OrderBookEngine\CMakeLists.txt" />
