@@ -71,6 +71,29 @@ Batch#, Latency(μs)
 
 ---
 
+### 📈 Multithreaded Benchmark (Xeon E5-1650v3, 20K Orders)
+
+| Threads | Insert Time (ms) | Match Time (ms) | Total Time (ms) | Trades | Throughput |
+|---------|------------------|-----------------|------------------|--------|------------|
+| 4       | 368              | 2777            | 3146             | 18000  | **6,356**  |
+| 8       | 309              | 3073            | 3382             | 18000  | 5,912      |
+| 12      | 287              | 3100            | 3388             | 18000  | 5,902      |
+| 16      | 291              | 3099            | 3391             | 18000  | 5,898      |
+
+🧠 *match() logic is single-threaded; further scaling requires concurrency-aware matching or lock-free queues.*
+
+---
+#### ⏱ Performance vs Thread Count
+![Performance vs Thread Count](doc/benchmark_performance_vs_threads.png)
+
+---
+
+#### ⚡ Throughput vs Thread Count
+![Throughput vs Thread Count](doc/benchmark_throughput_vs_threads.png)
+
+---
+
+
 ## 📦 Repo Structure
 ```
 benchmarks/
