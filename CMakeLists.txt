@@ -42,6 +42,15 @@ target_link_libraries(benchmark_orders_v2 PRIVATE orderbook_core)
 add_executable(benchmark_orders_v3 benchmarks/benchmark_orders_v3.cpp)
 target_link_libraries(benchmark_orders_v3 PRIVATE orderbook_core)
 
+# Benchmark multi-threaded
+add_executable(benchmark_orders_mt benchmarks/benchmark_orders_mt.cpp)
+target_link_libraries(benchmark_orders_mt PRIVATE orderbook_core)
+
+# Benchmark multi-threaded v2
+add_executable(benchmark_orders_mt_v2 benchmarks/benchmark_orders_mt_v2.cpp)
+target_link_libraries(benchmark_orders_mt_v2 PRIVATE orderbook_core)
+
+
 # Tests
 add_executable(OrderBookEngine_tests
     Tests/my_tests.cpp

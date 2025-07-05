@@ -5,6 +5,8 @@
 
 
 bool OrderBook::addOrder(const Order& order) {
+    std::lock_guard<std::mutex> lock(mutex_);
+
     if (order_lookup_.count(order.id)) {
         return false;
     }
@@ -21,6 +23,8 @@ bool OrderBook::addOrder(const Order& order) {
 
 
 bool OrderBook::cancelOrder(const std::string& order_id) {
+    std::lock_guard<std::mutex> lock(mutex_);
+
     auto it = order_lookup_.find(order_id);
     if (it == order_lookup_.end()) return false;
 
@@ -38,6 +42,8 @@ bool OrderBook::cancelOrder(const std::string& order_id) {
 
 
 bool OrderBook::modifyOrder(const std::string& order_id, double new_price, int new_quantity) {
+    std::lock_guard<std::mutex> lock(mutex_);
+
     auto it = order_lookup_.find(order_id);
     if (it == order_lookup_.end()) {
         return false;
@@ -54,6 +60,8 @@ bool OrderBook::modifyOrder(const std::string& order_id, double new_price, int n
 
 
 std::optional<Order> OrderBook::getTopBid() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+
     if (buy_orders_.empty()) {
         return std::nullopt;
 	}
@@ -62,6 +70,8 @@ std::optional<Order> OrderBook::getTopBid() const {
 
 
 std::optional<Order> OrderBook::getTopAsk() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+
     if (sell_orders_.empty()) {
         return std::nullopt;
     }
@@ -70,6 +80,8 @@ std::optional<Order> OrderBook::getTopAsk() const {
 
 
 void OrderBook::matchOrders() {
+    std::lock_guard<std::mutex> lock(mutex_);
+
     while (!buy_orders_.empty() && !sell_orders_.empty()) {
         auto best_bid_it = buy_orders_.begin();
         auto best_ask_it = sell_orders_.begin();

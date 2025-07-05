@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <set>
 #include <optional>
+#include <mutex>
+
 
 enum class OrderSide { BUY, SELL };
 
@@ -56,4 +58,6 @@ private:
     std::unordered_map<std::string, std::set<Order>::iterator> order_lookup_;
     std::set<Order, BidComparator> buy_orders_;
     std::set<Order, AskComparator> sell_orders_;
+
+    mutable std::mutex mutex_;
 };
