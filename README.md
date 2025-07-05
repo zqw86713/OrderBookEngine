@@ -20,41 +20,76 @@ A high-performance, modular order book engine written in C++17. This project sim
   - Structured to support Google Test and CMake integration
   - Includes a runnable `main.cpp` demonstrating the matching engine in action
 
----
-
-## 📂 Project Structure
-
-```
-├── OrderBook.h # Order management: add/cancel/modify/query
-├── MatchingEngine.h/.cpp # Order matching logic
-├── main.cpp # Sample usage of OrderBook and MatchingEngine
-├── CMakeLists.txt # (Upcoming) Build configuration with gtest support
-└── README.md # Project overview
-```
 
 ---
+## 📈 Benchmark: Matching Engine Performance
 
-## 🧠 Sample Output
-```
-Trade: B1 buys from S1 at $99.5 for 8 units
-Trade: B1 buys from S2 at $100 for 2 units
-Trade: B2 buys from S2 at $100 for 5 units
-```
-
+### 🔧 Environment
+- C++17, STL-based `std::set` + `unordered_map`
+- Single-threaded execution
+- Synthetic order flow: 50% BUY @ 105, 50% SELL @ 95
+- Platform: Local workstation (Intel Xeon E5-1650 v3 / Windows / MSVC)
 
 ---
 
-## 🔭 Planned Features
+### ⚡ Summary (v3: Batch Matching Latency)
 
-| Feature | Description |
-|--------|-------------|
-| 🧪 Google Test | Add unit test coverage for core modules |
-| 💡 Market Orders | Support for non-price-constrained orders |
-| ⏱️ Latency Metrics | Measure and log matching latency with `std::chrono` |
-| 🧵 Multithreading | Simulate concurrent order flow for HFT-style stress testing |
-| 📊 Trade Log | Export trade execution to CSV/JSON for backtesting or analysis |
-| 🌐 API / CLI | Add REST interface or command-line control for end-to-end simulation |
+| Metric                | Value                     |
+|------------------------|----------------------------|
+| Total Orders           | 50,000                   |
+| Trades Executed        | 45,000                   |
+| Matching Batches       | ~500                     |
+| Average Batch Latency  | ~280 μs                  |
+| P50 Batch Latency      | ~220 μs                  |
+| P95 Batch Latency      | ~351 μs                  |
+| P99 Batch Latency      | ~418 μs                  |
+| Estimated Throughput   | ~2,964 orders/sec        |
 
+---
+
+### 📉 Batch Latency Trend
+
+Each call to `engine.match()` processes a batch of trades. We recorded per-batch latency using `steady_clock::now()` and plotted trends across 500+ match iterations.
+
+![Latency Distribution](./doc/latency_histogram.png)
+
+![Latency Over Batches](./doc/latency_stability.png)
+
+> Benchmarked using `benchmark_orders_v3.cpp`. Exported latency data is saved as CSV and visualized via Python/Matplotlib.
+
+---
+
+### 📝 Sample Output (CSV format)
+```
+Batch#, Latency(μs)
+1,184
+2,203
+3,240
+...
+500,412
+```
+
+---
+
+## 📦 Repo Structure
+```
+benchmarks/
+├─ benchmark_orders.cpp // Simple throughput + match count
+├─ benchmark_orders_v2.cpp // Adds per-trade latency + P95
+└─ benchmark_orders_v3.cpp // Adds per-batch latency, CSV output
+doc/
+├─ latency_histogram.png
+└─ latency_stability.png
+
+```
+
+---
+
+
+## ✅ Next Steps (Optional)
+- [ ] Add multithreaded `MatchingEngine` with fine-grained locks
+- [ ] Add ZeroMQ or gRPC real-time gateway interface
+- [ ] Plug into FIX engine and replay LOBSTER real-world L2 feeds
 ---
 
 ## 🎯 Project Goals
