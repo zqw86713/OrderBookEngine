@@ -30,9 +30,17 @@ target_include_directories(orderbook_core PUBLIC Headers)
 add_executable(OrderBookEngine Sources/main.cpp)
 target_link_libraries(OrderBookEngine PRIVATE orderbook_core)
 
-# Benchmark
-add_executable(benchmark_orders benchmarks/benchmark_orders.cpp)
-target_link_libraries(benchmark_orders PRIVATE orderbook_core)
+# Benchmark v1
+add_executable(benchmark_orders_v1 benchmarks/benchmark_orders.cpp)
+target_link_libraries(benchmark_orders_v1 PRIVATE orderbook_core)
+
+# Benchmark v2
+add_executable(benchmark_orders_v2 benchmarks/benchmark_orders_v2.cpp)
+target_link_libraries(benchmark_orders_v2 PRIVATE orderbook_core)
+
+# Benchmark v3
+add_executable(benchmark_orders_v3 benchmarks/benchmark_orders_v3.cpp)
+target_link_libraries(benchmark_orders_v3 PRIVATE orderbook_core)
 
 # Tests
 add_executable(OrderBookEngine_tests
