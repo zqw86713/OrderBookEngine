@@ -91,8 +91,13 @@ Batch#, Latency(μs)
 #### ⚡ Throughput vs Thread Count
 ![Throughput vs Thread Count](doc/benchmark_throughput_vs_threads.png)
 
+
 ---
 
+#### ⚡ Order Latency Histogram
+![Latency Histogram](doc/latency_mt_histogram.png)
+
+---
 
 ## 📦 Repo Structure
 ```

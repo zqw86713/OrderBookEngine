@@ -50,6 +50,11 @@ target_link_libraries(benchmark_orders_mt PRIVATE orderbook_core)
 add_executable(benchmark_orders_mt_v2 benchmarks/benchmark_orders_mt_v2.cpp)
 target_link_libraries(benchmark_orders_mt_v2 PRIVATE orderbook_core)
 
+# ✅ Latency benchmark (multi-threaded)
+add_executable(benchmark_latency_mt benchmarks/benchmark_latency_mt.cpp)
+target_link_libraries(benchmark_latency_mt PRIVATE orderbook_core)
+target_include_directories(benchmark_latency_mt PRIVATE Headers)
+target_compile_features(benchmark_latency_mt PRIVATE cxx_std_17)
 
 # Tests
 add_executable(OrderBookEngine_tests
