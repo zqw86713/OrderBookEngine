@@ -23,32 +23,39 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(orderbook_core
     Sources/MatchingEngine.cpp
     Sources/OrderBook.cpp
-)
+ "benchmarks/benchmark_latency_mt.cpp")
 target_include_directories(orderbook_core PUBLIC Headers)
 
 # Main executable
-add_executable(OrderBookEngine Sources/main.cpp)
+add_executable(OrderBookEngine Sources/main.cpp "benchmarks/benchmark_latency_mt.cpp")
 target_link_libraries(OrderBookEngine PRIVATE orderbook_core)
 
 # Benchmark v1
-add_executable(benchmark_orders_v1 benchmarks/benchmark_orders.cpp)
+add_executable(benchmark_orders_v1 benchmarks/benchmark_orders.cpp "benchmarks/benchmark_latency_mt.cpp")
 target_link_libraries(benchmark_orders_v1 PRIVATE orderbook_core)
 
 # Benchmark v2
-add_executable(benchmark_orders_v2 benchmarks/benchmark_orders_v2.cpp)
+add_executable(benchmark_orders_v2 benchmarks/benchmark_orders_v2.cpp "benchmarks/benchmark_latency_mt.cpp")
 target_link_libraries(benchmark_orders_v2 PRIVATE orderbook_core)
 
 # Benchmark v3
-add_executable(benchmark_orders_v3 benchmarks/benchmark_orders_v3.cpp)
+add_executable(benchmark_orders_v3 benchmarks/benchmark_orders_v3.cpp "benchmarks/benchmark_latency_mt.cpp")
 target_link_libraries(benchmark_orders_v3 PRIVATE orderbook_core)
 
 # Benchmark multi-threaded
-add_executable(benchmark_orders_mt benchmarks/benchmark_orders_mt.cpp)
+add_executable(benchmark_orders_mt benchmarks/benchmark_orders_mt.cpp "benchmarks/benchmark_latency_mt.cpp")
 target_link_libraries(benchmark_orders_mt PRIVATE orderbook_core)
 
 # Benchmark multi-threaded v2
-add_executable(benchmark_orders_mt_v2 benchmarks/benchmark_orders_mt_v2.cpp)
+add_executable(benchmark_orders_mt_v2 benchmarks/benchmark_orders_mt_v2.cpp "benchmarks/benchmark_latency_mt.cpp")
 target_link_libraries(benchmark_orders_mt_v2 PRIVATE orderbook_core)
+
+# Latency benchmark
+add_executable(benchmark_latency_mt benchmarks/benchmark_latency_mt.cpp)
+target_link_libraries(benchmark_latency_mt PRIVATE orderbook_core)
+target_include_directories(benchmark_latency_mt PRIVATE Headers)
+target_compile_features(benchmark_latency_mt PRIVATE cxx_std_17)
+
 
 
 # Tests
@@ -56,7 +63,7 @@ add_executable(OrderBookEngine_tests
     Tests/my_tests.cpp
     Tests/test_order_book.cpp
     Tests/test_smoke.cpp
-)
+ "benchmarks/benchmark_latency_mt.cpp")
 target_link_libraries(OrderBookEngine_tests PRIVATE GTest::gtest_main orderbook_core)
 
 enable_testing()
