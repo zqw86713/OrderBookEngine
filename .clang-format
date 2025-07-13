@@ -1,0 +1,27 @@
+
+# This is a basic .clang-format file for C++17 using the Google style guide.
+# You can place this file in the root directory of your project.
+
+# Based on Google's C++ style guide.
+BasedOnStyle: Google
+
+# Set the C++ standard to C++17.
+# This ensures that clang-format is aware of C++17 syntax.
+Standard:  c++17 
+
+# Column limit for wrapping lines. Google's guide suggests 80.
+ColumnLimit: 80
+
+# The number of spaces to use for indentation.
+IndentWidth: 2
+
+# Whether to use tabs for indentation. Google style uses spaces.
+UseTab: Never
+
+# Controls the spaces around pointers.
+# 'Middle' means space on both sides, e.g., 'int * p'.
+PointerAlignment: Left
+
+# Allow short functions to be put on a single line.
+AllowShortFunctionsOnASingleLine: None
+
