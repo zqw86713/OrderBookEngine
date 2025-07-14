@@ -44,8 +44,8 @@ int main(int argc, char* argv[]) {
   std::cout << "[INFO] Generating " << num_orders << " orders...\n";
 
   auto orders = generateOrders(num_orders);
-  OrderBook order_book;
-  MatchingEngine engine(order_book);
+  MatchingEngine engine;                     // use default ctor
+  auto& order_book = engine.getOrderBook();  // grab its internal book
 
   auto t0 = std::chrono::high_resolution_clock::now();
 

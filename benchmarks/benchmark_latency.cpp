@@ -35,12 +35,12 @@ Order generateRandomOrder() {
 // ----- 延迟测试逻辑 -----
 void run_latency_benchmark(int num_orders) {
   std::vector<double> latencies_ms;
-  OrderBook book;
-  MatchingEngine engine(book);
+  MatchingEngine engine;                     // use default ctor
+  auto& order_book = engine.getOrderBook();  // grab its internal book
 
   for (int i = 0; i < num_orders; ++i) {
     Order order = generateRandomOrder();
-    book.addOrder(order);  // 你需要在 OrderBook 中实现这个函数
+    order_book.addOrder(order);  // 你需要在 OrderBook 中实现这个函数
 
     auto start = std::chrono::high_resolution_clock::now();
     engine.match();  // 无参调用
