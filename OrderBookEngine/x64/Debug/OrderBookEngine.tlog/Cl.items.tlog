@@ -1,6 +1,0 @@
-D:\MyProjects\OrderBookEngine\Sources\main.cpp;D:\MyProjects\OrderBookEngine\OrderBookEngine\x64\Debug\main.obj
-D:\MyProjects\OrderBookEngine\Sources\MatchingEngine.cpp;D:\MyProjects\OrderBookEngine\OrderBookEngine\x64\Debug\MatchingEngine.obj
-D:\MyProjects\OrderBookEngine\Sources\OrderBook.cpp;D:\MyProjects\OrderBookEngine\OrderBookEngine\x64\Debug\OrderBook.obj
-D:\MyProjects\OrderBookEngine\Tests\my_tests.cpp;D:\MyProjects\OrderBookEngine\OrderBookEngine\x64\Debug\my_tests.obj
-D:\MyProjects\OrderBookEngine\Tests\test_order_book.cpp;D:\MyProjects\OrderBookEngine\OrderBookEngine\x64\Debug\test_order_book.obj
-D:\MyProjects\OrderBookEngine\Tests\test_smoke.cpp;D:\MyProjects\OrderBookEngine\OrderBookEngine\x64\Debug\test_smoke.obj
