@@ -32,19 +32,21 @@ add_executable(OrderBookEngine
 target_link_libraries(OrderBookEngine PRIVATE orderbook_core)
 
 # Benchmarks
-foreach(bm
-    benchmark_orders.cpp
-    benchmark_orders_v2.cpp
-    benchmark_orders_v3.cpp
-    benchmark_orders_mt.cpp
-    benchmark_orders_mt_v2.cpp
-    benchmark_latency_mt.cpp
+add_executable(benchmark_orders
+    benchmarks/benchmark_orders.cpp
 )
-    get_filename_component(name ${bm} NAME_WE)
-    add_executable(${name} benchmarks/${bm})
-    target_link_libraries(${name} PRIVATE orderbook_core)
-    target_include_directories(${name} PRIVATE Headers)
-endforeach()
+target_link_libraries(benchmark_orders PRIVATE orderbook_core)
+
+add_executable(benchmark_orders_mt_v2
+    benchmarks/benchmark_orders_mt_v2.cpp
+)
+target_link_libraries(benchmark_orders_mt_v2 PRIVATE orderbook_core)
+
+add_executable(benchmark_latency
+    benchmarks/benchmark_latency.cpp
+)
+target_link_libraries(benchmark_latency PRIVATE orderbook_core)
+
 
 # Tests
 enable_testing()
