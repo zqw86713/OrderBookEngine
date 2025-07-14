@@ -23,10 +23,10 @@ std::vector<Order> generateOrders(int count) {
 }
 
 int main() {
-  const int num_orders = 50000;
+  const int num_orders = 20000;
 
-  OrderBook order_book;
-  MatchingEngine engine(order_book);
+  MatchingEngine engine;
+  auto& order_book = engine.getOrderBook();
   auto orders = generateOrders(num_orders);
 
   std::cout << "[INFO] Adding orders...\n";

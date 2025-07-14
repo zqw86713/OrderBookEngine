@@ -1,48 +1,45 @@
-﻿#include "../Headers/MatchingEngine.h"
+﻿// Sources/MatchingEngine.cpp
+#include "MatchingEngine.h"
 
+#include <algorithm>  // 若不需要算法，可删掉
+#include <chrono>     // 为 std::chrono::steady_clock::now()
+
+#include "OrderBook.h"
+
+// 如果你不想把 match() 全写在头里，也可以像下面这样单独实现：
 std::vector<Trade> MatchingEngine::match() {
   std::vector<Trade> trades;
 
   while (true) {
-    auto top_bid_opt = order_book_.getTopBid();
-    auto top_ask_opt = order_book_.getTopAsk();
+    auto bid_opt = order_book_.getTopBid();
+    auto ask_opt = order_book_.getTopAsk();
+    if (!bid_opt.has_value() || !ask_opt.has_value()) break;
 
-    if (!top_bid_opt.has_value() || !top_ask_opt.has_value()) break;
+    const Order& bid = *bid_opt;
+    const Order& ask = *ask_opt;
+    if (bid.price < ask.price) break;
 
-    const Order& top_bid = *top_bid_opt;
-    const Order& top_ask = *top_ask_opt;
+    int qty = std::min(bid.quantity, ask.quantity);
+    double price = ask.price;
 
-    if (top_bid.price < top_ask.price) break;
+    // 这里顺序要和 Trade 结构体一致：quantity 在 price 前面
+    trades.push_back(
+        Trade{bid.id, ask.id, qty, price, std::chrono::steady_clock::now()});
 
-    int trade_qty = std::min(top_bid.quantity, top_ask.quantity);
-    double trade_price = top_ask.price;
+    order_book_.cancelOrder(bid.id);
+    order_book_.cancelOrder(ask.id);
 
-    trades.emplace_back(Trade{top_bid.id, top_ask.id, trade_price, trade_qty,
-                              std::chrono::steady_clock::now()});
-
-    int remaining_bid_qty = top_bid.quantity - trade_qty;
-    int remaining_ask_qty = top_ask.quantity - trade_qty;
-
-    // Remove both orders
-    order_book_.cancelOrder(top_bid.id);
-    order_book_.cancelOrder(top_ask.id);
-
-    // Re-add remaining bid with fresh timestamp
-    if (remaining_bid_qty > 0) {
-      Order remaining_bid = top_bid;
-      remaining_bid.quantity = remaining_bid_qty;
-      remaining_bid.timestamp =
-          std::chrono::steady_clock::now();  // 💡 critical
-      order_book_.addOrder(remaining_bid);
+    if (bid.quantity > qty) {
+      Order r = bid;
+      r.quantity = bid.quantity - qty;
+      r.timestamp = std::chrono::steady_clock::now();
+      order_book_.addOrder(r);
     }
-
-    // Re-add remaining ask with fresh timestamp
-    if (remaining_ask_qty > 0) {
-      Order remaining_ask = top_ask;
-      remaining_ask.quantity = remaining_ask_qty;
-      remaining_ask.timestamp =
-          std::chrono::steady_clock::now();  // 💡 critical
-      order_book_.addOrder(remaining_ask);
+    if (ask.quantity > qty) {
+      Order r = ask;
+      r.quantity = ask.quantity - qty;
+      r.timestamp = std::chrono::steady_clock::now();
+      order_book_.addOrder(r);
     }
   }
 
