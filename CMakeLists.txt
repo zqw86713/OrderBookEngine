@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.15)
 project(OrderBookEngine)
 
 # vcpkg toolchain check
@@ -10,8 +10,7 @@ endif()
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/refs/heads/main.zip
-)
+  URL https://github.com/google/googletest/archive/refs/heads/main.zip)
 FetchContent_MakeAvailable(googletest)
 
 find_package(GTest CONFIG REQUIRED)
@@ -21,48 +20,41 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Core library
 add_library(orderbook_core
-    Sources/MatchingEngine.cpp
     Sources/OrderBook.cpp
+    Sources/MatchingEngine.cpp
 )
 target_include_directories(orderbook_core PUBLIC Headers)
 
 # Main executable
-add_executable(OrderBookEngine Sources/main.cpp)
+add_executable(OrderBookEngine
+    Sources/main.cpp
+)
 target_link_libraries(OrderBookEngine PRIVATE orderbook_core)
 
-# Benchmark v1
-add_executable(benchmark_orders_v1 benchmarks/benchmark_orders.cpp)
-target_link_libraries(benchmark_orders_v1 PRIVATE orderbook_core)
-
-# Benchmark v2
-add_executable(benchmark_orders_v2 benchmarks/benchmark_orders_v2.cpp)
-target_link_libraries(benchmark_orders_v2 PRIVATE orderbook_core)
-
-# Benchmark v3
-add_executable(benchmark_orders_v3 benchmarks/benchmark_orders_v3.cpp)
-target_link_libraries(benchmark_orders_v3 PRIVATE orderbook_core)
-
-# Benchmark multi-threaded
-add_executable(benchmark_orders_mt benchmarks/benchmark_orders_mt.cpp)
-target_link_libraries(benchmark_orders_mt PRIVATE orderbook_core)
-
-# Benchmark multi-threaded v2
-add_executable(benchmark_orders_mt_v2 benchmarks/benchmark_orders_mt_v2.cpp)
-target_link_libraries(benchmark_orders_mt_v2 PRIVATE orderbook_core)
-
-# ✅ Latency benchmark (multi-threaded)
-add_executable(benchmark_latency_mt benchmarks/benchmark_latency_mt.cpp)
-target_link_libraries(benchmark_latency_mt PRIVATE orderbook_core)
-target_include_directories(benchmark_latency_mt PRIVATE Headers)
-target_compile_features(benchmark_latency_mt PRIVATE cxx_std_17)
+# Benchmarks
+foreach(bm
+    benchmark_orders.cpp
+    benchmark_orders_v2.cpp
+    benchmark_orders_v3.cpp
+    benchmark_orders_mt.cpp
+    benchmark_orders_mt_v2.cpp
+    benchmark_latency_mt.cpp
+)
+    get_filename_component(name ${bm} NAME_WE)
+    add_executable(${name} benchmarks/${bm})
+    target_link_libraries(${name} PRIVATE orderbook_core)
+    target_include_directories(${name} PRIVATE Headers)
+endforeach()
 
 # Tests
-add_executable(OrderBookEngine_tests
-    Tests/my_tests.cpp
-    Tests/test_order_book.cpp
-    Tests/test_smoke.cpp
-)
-target_link_libraries(OrderBookEngine_tests PRIVATE GTest::gtest_main orderbook_core)
-
 enable_testing()
+add_executable(OrderBookEngine_tests
+    Tests/orderbook_market_test.cpp
+    Tests/orderbook_limit_test.cpp
+)
+target_link_libraries(OrderBookEngine_tests
+    PRIVATE
+      orderbook_core
+      GTest::gtest_main
+)
 add_test(NAME AllTests COMMAND OrderBookEngine_tests)

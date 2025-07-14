@@ -1,118 +1,130 @@
-﻿#include "../Headers/OrderBook.h"
+﻿
+// Sources/OrderBook.cpp
+#include "OrderBook.h"
 
 #include <algorithm>
-#include <iostream>
 
 bool OrderBook::addOrder(const Order& order) {
-  std::lock_guard<std::mutex> lock(mutex_);
+  std::lock_guard<std::recursive_mutex> lock(mutex_);
 
-  if (order_lookup_.count(order.id)) {
-    return false;
-  }
+  // Only reject duplicates
+  if (buy_lookup_.count(order.id) || sell_lookup_.count(order.id)) return false;
 
+  // Insert market or limit orders into book
   if (order.side == OrderSide::BUY) {
     auto it = buy_orders_.insert(order).first;
-    order_lookup_[order.id] = it;
+    buy_lookup_[order.id] = it;
   } else {
     auto it = sell_orders_.insert(order).first;
-    order_lookup_[order.id] = it;
+    sell_lookup_[order.id] = it;
   }
   return true;
 }
 
 bool OrderBook::cancelOrder(const std::string& order_id) {
-  std::lock_guard<std::mutex> lock(mutex_);
-
-  auto it = order_lookup_.find(order_id);
-  if (it == order_lookup_.end()) return false;
-
-  const Order& order = *(it->second);
-  if (order.side == OrderSide::BUY) {
-    buy_orders_.erase(it->second);
-  } else {
-    sell_orders_.erase(it->second);
+  std::lock_guard<std::recursive_mutex> lock(mutex_);
+  auto ib = buy_lookup_.find(order_id);
+  if (ib != buy_lookup_.end()) {
+    buy_orders_.erase(ib->second);
+    buy_lookup_.erase(ib);
+    return true;
   }
-
-  order_lookup_.erase(it);
-  return true;
+  auto is = sell_lookup_.find(order_id);
+  if (is != sell_lookup_.end()) {
+    sell_orders_.erase(is->second);
+    sell_lookup_.erase(is);
+    return true;
+  }
+  return false;
 }
 
 bool OrderBook::modifyOrder(const std::string& order_id, double new_price,
                             int new_quantity) {
-  std::lock_guard<std::mutex> lock(mutex_);
-
-  auto it = order_lookup_.find(order_id);
-  if (it == order_lookup_.end()) {
-    return false;
+  std::lock_guard<std::recursive_mutex> lock(mutex_);
+  auto ib = buy_lookup_.find(order_id);
+  if (ib != buy_lookup_.end()) {
+    Order old = *ib->second;
+    if (old.type == OrderType::MARKET) return false;
+    cancelOrder(order_id);
+    return addOrder(Order(order_id, old.side, new_price, new_quantity, old.type,
+                          old.timestamp));
   }
-
-  Order old_order = *(it->second);
-  cancelOrder(order_id);
-
-  Order modified_order(order_id, old_order.side, new_price, new_quantity,
-                       old_order.timestamp);
-  return addOrder(modified_order);
+  auto is = sell_lookup_.find(order_id);
+  if (is != sell_lookup_.end()) {
+    Order old = *is->second;
+    if (old.type == OrderType::MARKET) return false;
+    cancelOrder(order_id);
+    return addOrder(Order(order_id, old.side, new_price, new_quantity, old.type,
+                          old.timestamp));
+  }
+  return false;
 }
 
 std::optional<Order> OrderBook::getTopBid() const {
-  std::lock_guard<std::mutex> lock(mutex_);
-
-  if (buy_orders_.empty()) {
-    return std::nullopt;
-  }
+  std::lock_guard<std::recursive_mutex> lock(mutex_);
+  if (buy_orders_.empty()) return std::nullopt;
   return *buy_orders_.begin();
 }
 
 std::optional<Order> OrderBook::getTopAsk() const {
-  std::lock_guard<std::mutex> lock(mutex_);
-
-  if (sell_orders_.empty()) {
-    return std::nullopt;
-  }
+  std::lock_guard<std::recursive_mutex> lock(mutex_);
+  if (sell_orders_.empty()) return std::nullopt;
   return *sell_orders_.begin();
 }
 
 void OrderBook::matchOrders() {
-  std::lock_guard<std::mutex> lock(mutex_);
-
+  std::lock_guard<std::recursive_mutex> lock(mutex_);
   while (!buy_orders_.empty() && !sell_orders_.empty()) {
-    auto best_bid_it = buy_orders_.begin();
-    auto best_ask_it = sell_orders_.begin();
+    Order bid = *buy_orders_.begin();
+    Order ask = *sell_orders_.begin();
 
-    const Order& best_bid = *best_bid_it;
-    const Order& best_ask = *best_ask_it;
+    double exec_price = 0.0;
+    bool can_match = false;
+    if (bid.type == OrderType::MARKET) {
+      exec_price = ask.price;
+      can_match = true;
+    } else if (ask.type == OrderType::MARKET) {
+      exec_price = bid.price;
+      can_match = true;
+    } else if (bid.price >= ask.price) {
+      exec_price = ask.price;
+      can_match = true;
+    }
+    if (!can_match) break;
 
-    // 成交条件
-    if (best_bid.price >= best_ask.price) {
-      int trade_qty = std::min(best_bid.quantity, best_ask.quantity);
+    int qty = std::min(bid.quantity, ask.quantity);
+    Trade t{bid.id, ask.id, qty, exec_price, std::chrono::steady_clock::now()};
+    reportTrade(t);
 
-      // ✅ 缓存剩余部分（在 cancelOrder 之前）
-      int remaining_bid_qty = best_bid.quantity - trade_qty;
-      int remaining_ask_qty = best_ask.quantity - trade_qty;
+    cancelOrder(bid.id);
+    cancelOrder(ask.id);
 
-      std::string bid_id = best_bid.id;
-      std::string ask_id = best_ask.id;
-
-      // 输出成交信息
-      // std::cout << "Trade executed: " << trade_qty << " units at price " <<
-      // best_ask.price << "\n";
-
-      // ⚠️ 删除旧订单（会使 iterator 失效）
-      cancelOrder(bid_id);
-      cancelOrder(ask_id);
-
-      // ⚠️ 重建剩余挂单
-      if (remaining_bid_qty > 0) {
-        addOrder(Order(bid_id, OrderSide::BUY, best_bid.price,
-                       remaining_bid_qty, best_bid.timestamp));
-      }
-
-      if (remaining_ask_qty > 0) {
-        addOrder(Order(ask_id, OrderSide::SELL, best_ask.price,
-                       remaining_ask_qty, best_ask.timestamp));
-      }
-    } else {
-      break;  // ❌ 不再满足撮合条件
+    if (bid.type == OrderType::LIMIT && bid.quantity > qty) {
+      Order r{bid.id,           bid.side,
+              bid.price,        bid.quantity - qty,
+              OrderType::LIMIT, std::chrono::steady_clock::now()};
+      addOrder(r);
+    }
+    if (ask.type == OrderType::LIMIT && ask.quantity > qty) {
+      Order r{ask.id,           ask.side,
+              ask.price,        ask.quantity - qty,
+              OrderType::LIMIT, std::chrono::steady_clock::now()};
+      addOrder(r);
     }
   }
+}
+
+void OrderBook::setTradeCallback(TradeCallback cb) {
+  std::lock_guard<std::recursive_mutex> lock(mutex_);
+  trade_callback_ = std::move(cb);
+}
+
+const std::vector<Trade>& OrderBook::getExecutedTrades() const {
+  std::lock_guard<std::recursive_mutex> lock(mutex_);
+  return executed_trades_;
+}
+
+void OrderBook::reportTrade(const Trade& t) {
+  executed_trades_.push_back(t);
+  if (trade_callback_) trade_callback_(t);
 }
