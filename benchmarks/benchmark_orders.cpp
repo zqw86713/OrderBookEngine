@@ -12,7 +12,6 @@ std::vector<Order> generateOrders(int count) {
   orders.reserve(count);
 
   for (int i = 0; i < count; ++i) {
-    // 强制制造 match：BUY 105, SELL 95
     OrderSide side = (i % 2 == 0) ? OrderSide::BUY : OrderSide::SELL;
     double price = (side == OrderSide::BUY) ? 105.0 : 95.0;
 

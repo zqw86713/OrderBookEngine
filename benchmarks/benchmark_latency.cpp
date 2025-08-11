@@ -12,7 +12,6 @@
 #include "MatchingEngine.h"
 #include "OrderBook.h"
 
-// ----- 生成随机订单 -----
 Order generateRandomOrder() {
   static int64_t globalOrderCounter = 1;
   static std::mt19937 rng(std::random_device{}());
@@ -32,7 +31,6 @@ Order generateRandomOrder() {
   return Order(id, side, price, quantity);
 }
 
-// ----- 延迟测试逻辑 -----
 void run_latency_benchmark(int num_orders) {
   std::vector<double> latencies_ms;
   MatchingEngine engine;                     // use default ctor
@@ -40,10 +38,10 @@ void run_latency_benchmark(int num_orders) {
 
   for (int i = 0; i < num_orders; ++i) {
     Order order = generateRandomOrder();
-    order_book.addOrder(order);  // 你需要在 OrderBook 中实现这个函数
+    order_book.addOrder(order);
 
     auto start = std::chrono::high_resolution_clock::now();
-    engine.match();  // 无参调用
+    engine.match();
     auto end = std::chrono::high_resolution_clock::now();
 
     double latency =

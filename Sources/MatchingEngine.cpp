@@ -1,12 +1,11 @@
 ﻿// Sources/MatchingEngine.cpp
 #include "MatchingEngine.h"
 
-#include <algorithm>  // 若不需要算法，可删掉
-#include <chrono>     // 为 std::chrono::steady_clock::now()
+#include <algorithm>
+#include <chrono>  //  std::chrono::steady_clock::now()
 
 #include "OrderBook.h"
 
-// 如果你不想把 match() 全写在头里，也可以像下面这样单独实现：
 std::vector<Trade> MatchingEngine::match() {
   std::vector<Trade> trades;
 
@@ -22,7 +21,6 @@ std::vector<Trade> MatchingEngine::match() {
     int qty = std::min(bid.quantity, ask.quantity);
     double price = ask.price;
 
-    // 这里顺序要和 Trade 结构体一致：quantity 在 price 前面
     trades.push_back(
         Trade{bid.id, ask.id, qty, price, std::chrono::steady_clock::now()});
 
