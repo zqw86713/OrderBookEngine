@@ -71,7 +71,7 @@ void run_latency_benchmark(int num_orders) {
   }
   csv.close();
 
-  std::cout << "[✔] Latency data written to latency_data.csv\n";
+  std::cout << "Latency data written to latency_data.csv\n";
 }
 
 int main() {

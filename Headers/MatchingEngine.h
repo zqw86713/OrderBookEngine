@@ -11,8 +11,8 @@ class MatchingEngine {
 
   // ← only a declaration, no body here
   std::vector<Trade> match();
-  OrderBook& getOrderBook() { return order_book_; }
+  OrderBook& getOrderBook() { return internal_order_book_; }
 
  private:
-  OrderBook order_book_;
+  OrderBook internal_order_book_;
 };
