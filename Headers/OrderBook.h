@@ -16,8 +16,8 @@ enum class OrderType { LIMIT, MARKET };
 struct Order {
   std::string id;
   OrderSide side;
-  double price;                       // 对 MARKET 可忽略
-  OrderType type = OrderType::LIMIT;  // 默认为限价单
+  double price;
+  OrderType type = OrderType::LIMIT;
   int quantity;
   std::chrono::steady_clock::time_point timestamp;
 

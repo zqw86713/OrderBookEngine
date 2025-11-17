@@ -3,6 +3,7 @@
 *.vcxproj
 *.vcxproj.*
 *.user
+*.vcxproj.user
 
 # Ignore build directories
 /build/
@@ -17,11 +18,16 @@
 /*.dir/
 /*.ipch/
 /*.db
+OrderBookEngine/
 
-# Ignore CLion/VSCode IDE files
+# Ignore IDE files
 .idea/
 .vscode/
 cmake-build-*/
+
+# Ignore CTest/CTestResult
+CTestTestfile.cmake
+Makefile
 
 # Optional: ignore log/temp files
 *.log
@@ -31,7 +37,3 @@ cmake-build-*/
 *.exe
 *.dll
 *.lib
-
-# Ignore CTest/CTestResult
-CTestTestfile.cmake
-Makefile
