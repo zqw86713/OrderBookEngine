@@ -13,6 +13,7 @@
 enum class OrderSide { BUY, SELL };
 enum class OrderType { LIMIT, MARKET };
 
+// Order structure definition
 struct Order {
   std::string id;
   OrderSide side;
@@ -33,6 +34,7 @@ struct Order {
         timestamp(ts) {}
 };
 
+// Trade structure definition
 struct Trade {
   std::string buy_order_id;
   std::string sell_order_id;
@@ -41,6 +43,7 @@ struct Trade {
   std::chrono::steady_clock::time_point timestamp;
 };
 
+// Comparator for buy orders (bids)
 struct BidComparator {
   bool operator()(const Order& a, const Order& b) const {
     if (a.type != b.type) return a.type == OrderType::MARKET;
@@ -49,6 +52,7 @@ struct BidComparator {
   }
 };
 
+// Comparator for sell orders (asks)
 struct AskComparator {
   bool operator()(const Order& a, const Order& b) const {
     if (a.type != b.type) return a.type == OrderType::MARKET;
@@ -57,6 +61,7 @@ struct AskComparator {
   }
 };
 
+// OrderBook class definition
 class OrderBook {
  public:
   using TradeCallback = std::function<void(const Trade&)>;
